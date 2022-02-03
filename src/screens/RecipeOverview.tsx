@@ -27,7 +27,7 @@ const TEST_RECIPE_DATA: IRecipe[] = [
     tags: [
       {
         id: 1,
-        name: 'ble'
+        name: 'aaaaaa'
       },
       {
         id: 2,
@@ -65,6 +65,7 @@ const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
       data={TEST_RECIPE_DATA}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
+      overScrollMode='always'
     />
   );
 };
