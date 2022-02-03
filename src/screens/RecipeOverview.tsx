@@ -1,15 +1,73 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { StyleSheet, View, Text, FlatList } from 'react-native';
+import { RootStackParamList } from '../navigation/PeepoNavigation';
+import { ITag } from '../components/Tag';
 import RecipeCard from '../components/RecipeCard';
 
-const RecipeOverview = () => {
-  return (
-    <View style={styles.overview}>
-      <RecipeCard title={'Example Recipe 1'}/>
-      <RecipeCard title={'Example Recipe 2'}/>
-    </View>
-  );
+type RecipeOverviewProps = NativeStackScreenProps<
+  RootStackParamList,
+  'RecipeOverview'
+>;
+
+interface IRecipe {
+  id: number;
+  icon: string;
+  title: string;
+  description: string;
+  tags: ITag[];
 }
+
+const TEST_RECIPE_DATA: IRecipe[] = [
+  {
+    id: 1,
+    icon: '🍔',
+    title: 'Example 1',
+    description: 'lorem ipsum',
+    tags: [
+      {
+        id: 1,
+        name: 'ble'
+      },
+      {
+        id: 2,
+        name: 'other'
+      }
+    ]
+  },
+  {
+    id: 2,
+    icon: '🥗',
+    title: 'Example 2',
+    description: 'lorem ipsum',
+    tags: [
+      {
+        id: 1,
+        name: 'food'
+      },
+      {
+        id: 2,
+        name: 'other'
+      }
+    ]
+  }
+];
+
+const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
+
+  const renderItem = ({item}: {item: IRecipe}) => (
+    <RecipeCard icon={item.icon} title={item.title} tags={item.tags}/>
+  );
+
+  return (
+    <FlatList
+      style={styles.overview}
+      data={TEST_RECIPE_DATA}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id.toString()}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   overview: {

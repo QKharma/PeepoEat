@@ -1,20 +1,22 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import Tag from './Tag';
+import { ITag } from './Tag';
 import TagList from './TagList';
 
 interface CardProps {
   title: string;
+  icon: string;
+  tags: ITag[];
 }
 
 const RecipeCard = (props: CardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
-        <Text style={styles.icon}>🍗</Text>
+        <Text style={styles.icon}>{props.icon}</Text>
         <Text style={styles.title}>{props.title}</Text>
       </View>
-      <TagList data={['food', 'other']}/>
+      <TagList data={props.tags}/>
     </View>
   );
 }

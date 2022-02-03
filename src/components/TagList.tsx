@@ -1,16 +1,16 @@
 import React from 'react';
 import { Text, FlatList, StyleSheet, View } from 'react-native';
-import Tag from './Tag';
+import Tag, { ITag } from './Tag';
 
 interface TagListProps {
-  data: string[];
+  data: ITag[];
 }
 
 const TagList = (props: TagListProps) => {
 
-  const renderItem = ({item}: {item: string}) => (
+  const renderItem = ({item}: {item: ITag}) => (
     <View style={styles.tag}>
-      <Tag content={item}/>
+      <Tag name={item.name}/>
     </View>
   );
 
@@ -20,7 +20,7 @@ const TagList = (props: TagListProps) => {
         horizontal={true}
         data={props.data}
         renderItem={renderItem}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.id.toString()}
       />
     </View>
   )

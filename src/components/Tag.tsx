@@ -1,14 +1,19 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
+export interface ITag {
+  id: number;
+  name: string;
+}
+
 interface TagProps {
-  content: string;
+  name: string;
 }
 
 const Tag = (props: TagProps) => {
   return (
     <View style={styles.tag}>
-      <Text style={styles.content}>{props.content}</Text>
+      <Text style={styles.content}>{props.name}</Text>
     </View>
   );
 }

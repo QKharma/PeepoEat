@@ -3,8 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RecipeOverview from '../screens/RecipeOverview';
 
-type RootStackParamList = {
-  Home: undefined;
+export type RootStackParamList = {
+  RecipeOverview: undefined;
 }
 
 const StackNav = createNativeStackNavigator<RootStackParamList>();
@@ -13,9 +13,9 @@ const PeepoNavigation = () => {
 
   return (
     <NavigationContainer>
-      <StackNav.Navigator initialRouteName='Home'>
+      <StackNav.Navigator initialRouteName='RecipeOverview'>
         <StackNav.Screen
-          name = 'Home'
+          name = 'RecipeOverview'
           component = {RecipeOverview}
         />
       </StackNav.Navigator>
