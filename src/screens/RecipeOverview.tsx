@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
 import { RootStackParamList } from '../navigation/PeepoNavigation';
-import { ITag } from '../components/Tag';
+import Tag  from '../components/Tag';
 import RecipeCard from '../components/RecipeCard';
 
 type RecipeOverviewProps = NativeStackScreenProps<
@@ -10,15 +10,15 @@ type RecipeOverviewProps = NativeStackScreenProps<
   'RecipeOverview'
 >;
 
-interface IRecipe {
+interface Recipe {
   id: number;
   icon: string;
   title: string;
   description: string;
-  tags: ITag[];
+  tags: Tag[];
 }
 
-const TEST_RECIPE_DATA: IRecipe[] = [
+const TEST_RECIPE_DATA: Recipe[] = [
   {
     id: 1,
     icon: '🍔',
@@ -55,7 +55,7 @@ const TEST_RECIPE_DATA: IRecipe[] = [
 
 const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
 
-  const renderItem = ({item}: {item: IRecipe}) => (
+  const renderItem = ({item}: {item: Recipe}) => (
     <RecipeCard icon={item.icon} title={item.title} tags={item.tags}/>
   );
 

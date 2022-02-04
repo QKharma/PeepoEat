@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { ITag } from './Tag';
+import Tag from './Tag';
 import TagList from './TagList';
 
 interface CardProps {
   title: string;
   icon: string;
-  tags: ITag[];
+  tags: Tag[];
 }
 
 const RecipeCard = (props: CardProps) => {

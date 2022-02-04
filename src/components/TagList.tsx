@@ -1,14 +1,14 @@
 import React from 'react';
 import { Text, FlatList, StyleSheet, View } from 'react-native';
-import Tag, { ITag } from './Tag';
+import Tag from './Tag';
 
 interface TagListProps {
-  data: ITag[];
+  data: Tag[];
 }
 
 const TagList = (props: TagListProps) => {
 
-  const renderItem = ({item}: {item: ITag}) => (
+  const renderItem = ({item}: {item: Tag}) => (
     <View style={styles.tag}>
       <Tag name={item.name}/>
     </View>

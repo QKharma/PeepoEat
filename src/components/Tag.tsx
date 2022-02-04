@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
-export interface ITag {
+interface Tag {
   id: number;
   name: string;
 }
