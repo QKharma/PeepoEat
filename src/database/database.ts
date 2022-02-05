@@ -8,9 +8,9 @@ export class DatabaseHandler {
   public static getDbConnection = async (): Promise<Result<Connection>> => {
     try {
       const connection = await createConnection({
-        type: 'react-native',
-        database: 'test',
-        location: 'default',
+        type: 'expo',
+        database: 'peepo.db',
+        driver: require('expo-sqlite'),
         logging: ['error', 'query', 'schema'],
         synchronize: true,
         entities: [Recipe, Tag],
@@ -21,7 +21,7 @@ export class DatabaseHandler {
       if (e instanceof TypeORMError)
         return e;
       else
-        return new Error('database connection failed')
+        return new Error(`database connection failed ${e}`)
     }
   };
 }

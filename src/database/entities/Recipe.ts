@@ -12,13 +12,13 @@ export class Recipe {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('text')
+  @Column()
   icon!: string;
 
-  @Column('text')
+  @Column()
   title!: string;
 
-  @Column('text')
+  @Column()
   description!: string;
 
   @ManyToMany(() => Tag)

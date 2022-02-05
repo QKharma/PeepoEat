@@ -59,10 +59,12 @@ const TEST_RECIPE_DATA: RecipeCard[] = [
 ];
 
 const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
+
   const [database, setDatabase] = useState<Connection | undefined>();
   const [recipeCards, setRecipeCards] = useState<RecipeCard[]>([]);
 
   const setupConnection = async () => {
+    if (database) return;
     const connection = await DatabaseHandler.getDbConnection();
     if (!isError(connection)) {
       setDatabase(connection);
@@ -71,44 +73,17 @@ const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
     }
   };
 
-  const getTags = async () => {
+  const dropDb = async () => {
     const tagRepository = getRepository(TagEntity);
-    let result = await tagRepository.find();
-    if (result.length === 0) {
-      const tag1 = new TagEntity();
-      tag1.name = 'food';
-      const tag2 = new TagEntity();
-      tag2.name = 'other';
-      await tagRepository.save(tag1);
-      await tagRepository.save(tag2);
-    }
-  };
-
-  const getRecipes = async () => {
-    const tagRepository = getRepository(TagEntity);
-    let tagResult = await tagRepository.find();
-
     const recipeRepository = getRepository(RecipeEntity);
-    let recipeResult = await recipeRepository.find();
-    if (recipeResult.length === 0) {
-      const newRecipe = new RecipeEntity();
-      newRecipe.title = 'Example 1';
-      newRecipe.icon = '😀';
-      newRecipe.description = '';
-      newRecipe.tags = tagResult;
-      recipeResult = await recipeRepository.find();
-    }
-    setRecipeCards(recipeResult);
-  };
 
-  useEffect(() => {
-    if (!database) {
-      setupConnection();
-    } else {
-      getTags();
-      getRecipes();
-    }
-  }, []);
+    tagRepository.clear();
+    recipeRepository.clear();
+  }
+
+  useEffect( () => {
+    setupConnection();
+  },[]);
 
   const renderItem = ({ item }: { item: RecipeCard }) => (
     <RecipeCard icon={item.icon} title={item.title} tags={item.tags} />
