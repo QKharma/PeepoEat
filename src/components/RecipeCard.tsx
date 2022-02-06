@@ -4,6 +4,7 @@ import Tag from './Tag';
 import TagList from './TagList';
 
 interface CardProps {
+  id:number;
   title: string;
   icon: string;
   tags: Tag[];

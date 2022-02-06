@@ -11,7 +11,7 @@ export class DatabaseHandler {
         type: 'expo',
         database: 'peepo.db',
         driver: require('expo-sqlite'),
-        logging: ['error', 'query', 'schema'],
+        logging: ['error'],
         synchronize: true,
         entities: [Recipe, Tag],
       });

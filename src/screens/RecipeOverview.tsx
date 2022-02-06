@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StyleSheet, View, Text, FlatList } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableNativeFeedback, Pressable } from 'react-native';
 import { RootStackParamList } from '../navigation/PeepoNavigation';
 import Tag from '../components/Tag';
 import RecipeCard from '../components/RecipeCard';
@@ -9,59 +9,17 @@ import { DatabaseHandler } from '../database/database';
 import { isError } from '../util/Result';
 import { Recipe as RecipeEntity } from '../database/entities/Recipe';
 import { Tag as TagEntity } from '../database/entities/Tag';
+import CreateRecipe from './CreateRecipe';
 
 type RecipeOverviewProps = NativeStackScreenProps<
   RootStackParamList,
   'RecipeOverview'
 >;
 
-interface RecipeCard {
-  id: number;
-  icon: string;
-  title: string;
-  description: string;
-  tags: Tag[];
-}
-
-const TEST_RECIPE_DATA: RecipeCard[] = [
-  {
-    id: 1,
-    icon: '🍔',
-    title: 'Example 1',
-    description: 'lorem ipsum',
-    tags: [
-      {
-        id: 1,
-        name: 'aaaaaa',
-      },
-      {
-        id: 2,
-        name: 'other',
-      },
-    ],
-  },
-  {
-    id: 2,
-    icon: '🥗',
-    title: 'Example 2',
-    description: 'lorem ipsum',
-    tags: [
-      {
-        id: 1,
-        name: 'food',
-      },
-      {
-        id: 2,
-        name: 'other',
-      },
-    ],
-  },
-];
-
 const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
 
   const [database, setDatabase] = useState<Connection | undefined>();
-  const [recipeCards, setRecipeCards] = useState<RecipeCard[]>([]);
+  const [recipeCards, setRecipeCards] = useState<RecipeEntity[]>([]);
 
   const setupConnection = async () => {
     if (database) return;
@@ -77,33 +35,74 @@ const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
     const tagRepository = getRepository(TagEntity);
     const recipeRepository = getRepository(RecipeEntity);
 
-    tagRepository.clear();
-    recipeRepository.clear();
+    await tagRepository.clear();
+    await recipeRepository.clear();
+  }
+
+  const getRecipes = async () => {
+    if (!database) return;
+    const recipes = await database
+      .getRepository(RecipeEntity)
+      .createQueryBuilder('recipe')
+      .select(['recipe.id', 'recipe.icon', 'recipe.title'])
+      .leftJoinAndSelect('recipe.tags', 'tag')
+      .getMany();
+
+    setRecipeCards(recipes);
+  }
+
+  const addRecipe = (recipe: RecipeEntity) => {
+    setRecipeCards(recipeCards.concat([recipe]))
+  }
+  
+  const updateRecipeList = async () => {
+    await setupConnection();
+    await getRecipes();
   }
 
   useEffect( () => {
-    setupConnection();
+    updateRecipeList();
   },[]);
 
-  const renderItem = ({ item }: { item: RecipeCard }) => (
-    <RecipeCard icon={item.icon} title={item.title} tags={item.tags} />
+  const renderItem = ({ item }: { item: RecipeEntity }) => (
+    <RecipeCard id={item.id} icon={item.icon} title={item.title} tags={item.tags} />
   );
 
   return (
-    <FlatList
-      style={styles.overview}
-      data={recipeCards}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id.toString()}
-      overScrollMode='always'
-    />
+    <View style={styles.overview}>
+      <FlatList
+        data={recipeCards}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        overScrollMode='always'
+      />
+      <View>
+        <Pressable style={styles.createRecipeButton} android_ripple={{color: '#fff'}} onPressOut={() => navigation.push('CreateRecipe')}>
+          <Text style={styles.buttonText}>Create Recipe</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   overview: {
+    flex: 1,
+    flexDirection: 'column',
     padding: 5,
+    backgroundColor: '#ccc'
   },
+  createRecipeButton: {
+    marginVertical: 10,
+    justifyContent: 'flex-end',
+    backgroundColor: '#eee',
+    elevation: 10,
+    borderRadius: 5,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    textAlign: 'center',
+  }
 });
 
 export default RecipeOverview;
