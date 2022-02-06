@@ -4,9 +4,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RecipeOverview from '../screens/RecipeOverview';
 import CreateRecipe from '../screens/CreateRecipe';
 import { Recipe } from '../database/entities/Recipe';
+import { Option } from '../util/Option'
 
 export type RootStackParamList = {
-  RecipeOverview: undefined;
+  RecipeOverview: {
+    newRecipe: Option<Recipe>
+  };
   CreateRecipe: undefined;
 }
 
@@ -20,6 +23,7 @@ const PeepoNavigation = () => {
         <StackNav.Screen
           name = 'RecipeOverview'
           component = {RecipeOverview}
+          initialParams={{ newRecipe: undefined}}
         />
         <StackNav.Screen
           name = 'CreateRecipe'

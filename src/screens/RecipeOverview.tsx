@@ -2,33 +2,28 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StyleSheet, View, Text, FlatList, TouchableNativeFeedback, Pressable } from 'react-native';
 import { RootStackParamList } from '../navigation/PeepoNavigation';
-import Tag from '../components/Tag';
 import RecipeCard from '../components/RecipeCard';
 import { Connection, getRepository } from 'typeorm';
-import { DatabaseHandler } from '../database/database';
-import { isError } from '../util/Result';
+import { databaseHandler, DatabaseHandler } from '../database/databaseHandler';
 import { Recipe as RecipeEntity } from '../database/entities/Recipe';
 import { Tag as TagEntity } from '../database/entities/Tag';
-import CreateRecipe from './CreateRecipe';
+import { isSome } from '../util/Option';
 
 type RecipeOverviewProps = NativeStackScreenProps<
   RootStackParamList,
   'RecipeOverview'
 >;
 
-const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
+const RecipeOverview = ({ route, navigation }: RecipeOverviewProps) => {
+
+  const { newRecipe } = route.params;
 
   const [database, setDatabase] = useState<Connection | undefined>();
   const [recipeCards, setRecipeCards] = useState<RecipeEntity[]>([]);
 
   const setupConnection = async () => {
     if (database) return;
-    const connection = await DatabaseHandler.getDbConnection();
-    if (!isError(connection)) {
-      setDatabase(connection);
-    } else {
-      console.log(`error: ${connection.message}`);
-    }
+    setDatabase(await databaseHandler.connection);
   };
 
   const dropDb = async () => {
@@ -64,9 +59,15 @@ const RecipeOverview = ({ navigation }: RecipeOverviewProps) => {
     updateRecipeList();
   },[]);
 
+  useEffect(() => {
+    if (!isSome(newRecipe)) return;
+    if (recipeCards.filter((c) => c.id == newRecipe.id).length > 0) return;
+    addRecipe(newRecipe)
+  }, [route.params?.newRecipe])
+
   const renderItem = ({ item }: { item: RecipeEntity }) => (
     <RecipeCard id={item.id} icon={item.icon} title={item.title} tags={item.tags} />
-  );
+  ); 
 
   return (
     <View style={styles.overview}>

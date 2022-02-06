@@ -1,11 +1,28 @@
 import { Connection, createConnection } from 'typeorm';
 import { TypeORMError } from 'typeorm';
-import { Result } from '../util/Result';
+import { isError, Result } from '../util/Result';
 import { Recipe } from './entities/Recipe';
 import { Tag } from './entities/Tag';
 
 export class DatabaseHandler {
-  public static getDbConnection = async (): Promise<Result<Connection>> => {
+
+  connection: Promise<Connection|undefined>;
+
+  constructor() {
+    this.connection = this.awaitConnection()
+  }
+  
+  async awaitConnection(): Promise<Connection|undefined> {
+    const connection = await this.getDbConnection();
+    if (isError(connection)) {
+      console.log(connection.message);
+      return undefined;
+    } else {
+      return connection;
+    }
+  }
+
+  async getDbConnection(): Promise<Result<Connection>> {
     try {
       const connection = await createConnection({
         type: 'expo',
@@ -25,3 +42,5 @@ export class DatabaseHandler {
     }
   };
 }
+
+export const databaseHandler = new DatabaseHandler();
