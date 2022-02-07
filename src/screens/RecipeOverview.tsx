@@ -15,16 +15,12 @@ type RecipeOverviewProps = NativeStackScreenProps<
 >;
 
 const RecipeOverview = ({ route, navigation }: RecipeOverviewProps) => {
-
+  
   const { newRecipe } = route.params;
 
-  const [database, setDatabase] = useState<Connection | undefined>();
-  const [recipeCards, setRecipeCards] = useState<RecipeEntity[]>([]);
+  const database = databaseHandler.connection;
 
-  const setupConnection = async () => {
-    if (database) return;
-    setDatabase(await databaseHandler.connection);
-  };
+  const [recipeCards, setRecipeCards] = useState<RecipeEntity[]>([]);
 
   const dropDb = async () => {
     const tagRepository = getRepository(TagEntity);
@@ -51,13 +47,12 @@ const RecipeOverview = ({ route, navigation }: RecipeOverviewProps) => {
   }
   
   const updateRecipeList = async () => {
-    await setupConnection();
     await getRecipes();
   }
 
   useEffect( () => {
     updateRecipeList();
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (!isSome(newRecipe)) return;

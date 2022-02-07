@@ -6,44 +6,27 @@ import { Tag } from './entities/Tag';
 
 export class DatabaseHandler {
 
-  connection: Connection|undefined;
+  connection: Connection;
 
   constructor() {
     this.setConnection();
   }
   
   async setConnection() {
-    this.connection = await this.unwrapConnection();
-  }
-  
-  async unwrapConnection(): Promise<Connection|undefined> {
-    const connection = await this.getDbConnection();
-    if (isError(connection)) {
-      console.log(connection.message);
-      return undefined;
-    } else {
-      return connection;
-    }
+    this.connection = await this.getDbConnection();
   }
 
-  async getDbConnection(): Promise<Result<Connection>> {
-    try {
-      const connection = await createConnection({
-        type: 'expo',
-        database: 'peepo.db',
-        driver: require('expo-sqlite'),
-        logging: ['error'],
-        synchronize: true,
-        entities: [Recipe, Tag],
-      });
-  
-      return connection;
-    } catch (e) {
-      if (e instanceof TypeORMError)
-        return e;
-      else
-        return new Error(`database connection failed ${e}`)
-    }
+  async getDbConnection(): Promise<Connection> {
+    const connection = await createConnection({
+      type: 'expo',
+      database: 'peepo.db',
+      driver: require('expo-sqlite'),
+      logging: ['error'],
+      synchronize: true,
+      entities: [Recipe, Tag],
+    });
+
+    return connection;
   };
 }
 

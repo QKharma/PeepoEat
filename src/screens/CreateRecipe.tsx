@@ -13,12 +13,7 @@ type CreateRecipeProps = NativeStackScreenProps<
 
 const CreateRecipe = ({route, navigation}: CreateRecipeProps) => {
 
-  const [database, setDatabase] = useState<Connection | undefined>();
-
-  const setupConnection = async () => {
-    if (database) return;
-    setDatabase(await databaseHandler.connection);
-  };
+  const database = databaseHandler.connection;
 
   const saveRecipe = () => {
     const recipe: Recipe = {
@@ -44,7 +39,6 @@ const CreateRecipe = ({route, navigation}: CreateRecipeProps) => {
   }
 
   useEffect(() => {
-    setupConnection();
   }, [])
   
   return(
