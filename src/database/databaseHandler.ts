@@ -6,13 +6,17 @@ import { Tag } from './entities/Tag';
 
 export class DatabaseHandler {
 
-  connection: Promise<Connection|undefined>;
+  connection: Connection|undefined;
 
   constructor() {
-    this.connection = this.awaitConnection()
+    this.setConnection();
   }
   
-  async awaitConnection(): Promise<Connection|undefined> {
+  async setConnection() {
+    this.connection = await this.unwrapConnection();
+  }
+  
+  async unwrapConnection(): Promise<Connection|undefined> {
     const connection = await this.getDbConnection();
     if (isError(connection)) {
       console.log(connection.message);

@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Connection, getRepository } from 'typeorm';
+import { StyleSheet, View, Text, FlatList, Pressable } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StyleSheet, View, Text, FlatList, TouchableNativeFeedback, Pressable } from 'react-native';
 import { RootStackParamList } from '../navigation/PeepoNavigation';
 import RecipeCard from '../components/RecipeCard';
-import { Connection, getRepository } from 'typeorm';
-import { databaseHandler, DatabaseHandler } from '../database/databaseHandler';
+import { databaseHandler } from '../database/databaseHandler';
 import { Recipe as RecipeEntity } from '../database/entities/Recipe';
 import { Tag as TagEntity } from '../database/entities/Tag';
 import { isSome } from '../util/Option';
@@ -66,7 +66,13 @@ const RecipeOverview = ({ route, navigation }: RecipeOverviewProps) => {
   }, [route.params?.newRecipe])
 
   const renderItem = ({ item }: { item: RecipeEntity }) => (
-    <RecipeCard id={item.id} icon={item.icon} title={item.title} tags={item.tags} />
+    <RecipeCard 
+      style={styles.recipeCard}
+      id={item.id}
+      icon={item.icon} 
+      title={item.title} 
+      tags={item.tags} 
+    />
   ); 
 
   return (
@@ -94,15 +100,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc'
   },
   createRecipeButton: {
-    marginVertical: 10,
+    marginVertical: 1,
     justifyContent: 'flex-end',
     backgroundColor: '#eee',
     elevation: 10,
-    borderRadius: 5,
     paddingVertical: 10,
   },
   buttonText: {
     textAlign: 'center',
+  },
+  recipeCard: {
+    marginTop: 1,
   }
 });
 

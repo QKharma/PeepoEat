@@ -21,7 +21,7 @@ const Tag = (props: TagProps) => {
 const styles = StyleSheet.create({
   tag: {
     paddingHorizontal: 5,
-    backgroundColor: 'rgb(200,200,200)',
+    backgroundColor: 'rgb(220,220,220)',
     borderRadius: 10,
   },
   content: {

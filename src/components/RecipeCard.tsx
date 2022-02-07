@@ -4,6 +4,7 @@ import Tag from './Tag';
 import TagList from './TagList';
 
 interface CardProps {
+  style: {};
   id:number;
   title: string;
   icon: string;
@@ -12,12 +13,14 @@ interface CardProps {
 
 const RecipeCard = (props: CardProps) => {
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.icon}>{props.icon}</Text>
-        <Text style={styles.title}>{props.title}</Text>
+    <View style={props.style}>
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.icon}>{props.icon}</Text>
+          <Text style={styles.title}>{props.title}</Text>
+        </View>
+        <TagList data={props.tags}/>
       </View>
-      <TagList data={props.tags}/>
     </View>
   );
 }
@@ -25,11 +28,9 @@ const RecipeCard = (props: CardProps) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'column',
-    marginTop: 10,
     padding: 10,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: 'rgb(0,0,0)'
+    elevation: 10,
+    backgroundColor: '#fff',
   },
   cardHeader: {
     flexDirection: 'row',

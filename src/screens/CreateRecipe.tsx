@@ -24,9 +24,16 @@ const CreateRecipe = ({route, navigation}: CreateRecipeProps) => {
     const recipe: Recipe = {
       id: 1,
       title: 'Example',
-      icon: '1',
+      icon: '🌯',
       description: 'blabla',
-      tags: []
+      tags: [{
+        id: 1,
+        name: 'chickn'
+      },
+      {
+        id: 2,
+        name: 'other'
+      }]
     }
 
     navigation.navigate({
