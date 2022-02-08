@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform, StatusBar } from 'react-native';
 
 const Header = ({ title }: { title: string }) => {
   return (
@@ -9,10 +9,12 @@ const Header = ({ title }: { title: string }) => {
   );
 };
 
+const notchHeight = Platform.OS === 'android' ? StatusBar.currentHeight : 0;
+
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 20,
-    height: 50,
+    paddingTop: notchHeight,
+    height: (notchHeight ? notchHeight : 0) + 30,
     backgroundColor: '#fff',
   },
   headerText: {
