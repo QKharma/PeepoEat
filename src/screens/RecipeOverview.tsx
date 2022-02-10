@@ -6,7 +6,6 @@ import { RootStackParamList } from '../navigation/PeepoNavigation';
 import RecipeCard from '../components/RecipeCard';
 import { databaseHandler } from '../database/databaseHandler';
 import { Recipe as RecipeEntity } from '../database/entities/Recipe';
-import { Tag as TagEntity } from '../database/entities/Tag';
 import { isSome } from '../util/Option';
 
 type RecipeOverviewProps = NativeStackScreenProps<
@@ -21,14 +20,6 @@ const RecipeOverview = ({ route, navigation }: RecipeOverviewProps) => {
   const database = databaseHandler.connection;
 
   const [recipeCards, setRecipeCards] = useState<RecipeEntity[]>([]);
-
-  const dropDb = async () => {
-    const tagRepository = getRepository(TagEntity);
-    const recipeRepository = getRepository(RecipeEntity);
-
-    await tagRepository.clear();
-    await recipeRepository.clear();
-  }
 
   const getRecipes = async () => {
     if (!database) return;
@@ -78,25 +69,29 @@ const RecipeOverview = ({ route, navigation }: RecipeOverviewProps) => {
         keyExtractor={(item) => item.id.toString()}
         overScrollMode='always'
       />
-      <View>
-        <Pressable style={styles.createRecipeButton} android_ripple={{color: '#fff'}} onPressOut={() => navigation.push('CreateRecipe')}>
-          <Text style={styles.buttonText}>Create Recipe</Text>
-        </Pressable>
-      </View>
+      <Pressable style={styles.createRecipeButton} android_ripple={{color: '#fff'}} onPressOut={() => navigation.push('CreateRecipe')}>
+        <Text style={styles.buttonText}>Create Recipe</Text>
+      </Pressable>
     </View>
   );
 };
+
+const screenPadding = 5;
 
 const styles = StyleSheet.create({
   overview: {
     flex: 1,
     flexDirection: 'column',
-    padding: 5,
+    padding: screenPadding,
     backgroundColor: '#ccc'
   },
   createRecipeButton: {
     marginVertical: 1,
-    justifyContent: 'flex-end',
+    position: 'absolute',
+    marginLeft: screenPadding,
+    marginBottom: screenPadding + 10,
+    width: '100%',
+    bottom: 0,
     backgroundColor: '#eee',
     elevation: 10,
     paddingVertical: 10,
