@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Divider from '../components/Divider';
-import EmojiPicker from '../components/EmojiPicker';
+import EmojiPicker from '../components/FoodEmojiPicker';
 import { databaseHandler } from '../database/databaseHandler';
 import { Recipe } from '../database/entities/Recipe';
 import { RootStackParamList } from '../navigation/PeepoNavigation';
@@ -43,6 +43,8 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
   const [description, setDescription] = useState('');
   const [icon, setIcon] = useState('🍆')
 
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+
   const maxDescriptionLen = 100;
   const [descriptionLen, setDescriptionLen] = useState(0);
 
@@ -58,6 +60,11 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
     setDescriptionLen(description.length);
   }, [description]);
 
+  useEffect(() => {
+    if (emojiPickerOpen)
+    setEmojiPickerOpen(false);
+  }, [emojiPickerOpen])
+
   return (
     <SafeAreaView style={styles.form}>
       <View style={{ flexDirection: 'row' }}>
@@ -68,19 +75,25 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
           placeholder='New Recipe Name'
           keyboardAppearance='dark'
         />
-        <Text
-          style={{
-            paddingRight: 1,
-            paddingBottom: 1,
-            textAlign: 'center',
-            textAlignVertical: 'center',
-            borderWidth: 1,
-            height: 40,
-            width: 40,
-            marginLeft: 5,
-            borderRadius: 100,
-          }}
-        >{icon}</Text>
+        <Pressable
+          onPressOut={() => setEmojiPickerOpen(!emojiPickerOpen)}
+        >
+          <Text
+            style={{
+              paddingRight: 1,
+              paddingBottom: 1,
+              textAlign: 'center',
+              textAlignVertical: 'center',
+              borderWidth: 1,
+              height: 40,
+              width: 40,
+              marginLeft: 5,
+              borderRadius: 100,
+            }}
+          >
+            {icon}
+          </Text>
+        </Pressable>
       </View>
       <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Description</Text>
       <Divider />
@@ -114,7 +127,7 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
       >
         <Text style={styles.buttonText}>Create Recipe</Text>
       </Pressable>
-      {/*<EmojiPicker/>*/}
+      <EmojiPicker open={emojiPickerOpen} setIcon={(icon) => setIcon(icon)}/>
     </SafeAreaView>
   );
 };
