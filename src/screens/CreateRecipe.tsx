@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -127,7 +127,7 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
       >
         <Text style={styles.buttonText}>Create Recipe</Text>
       </Pressable>
-      <EmojiPicker open={emojiPickerOpen} setIcon={(icon) => setIcon(icon)}/>
+      <EmojiPicker open={emojiPickerOpen} setIcon={setIcon}/>
     </SafeAreaView>
   );
 };

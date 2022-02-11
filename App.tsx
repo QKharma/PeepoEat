@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'reflect-metadata';
-import { StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import PeepoNavigation from './src/navigation/PeepoNavigation';
 import { Connection } from 'typeorm';
 
@@ -10,9 +10,11 @@ const App = () => {
   const value = {connection, setConnection};
 
   return (
-    <View style={styles.container}>
-      <PeepoNavigation/>
-    </View>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <PeepoNavigation/>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Animated,
   Button,
@@ -7,6 +13,8 @@ import {
   StyleSheet,
   View,
   Pressable,
+  Keyboard,
+  FlatList,
 } from 'react-native';
 
 interface EmojiProps {
@@ -18,169 +26,161 @@ const EmojiPicker = (props: EmojiProps) => {
 
   const [open, setOpen] = useState(false);
 
-  const animWidth = useRef(new Animated.Value(30)).current;
-  const animHeight = useRef(new Animated.Value(30)).current;
+  const animWidth = new Animated.Value(30);
+  const animHeight = new Animated.Value(30);
 
   const openPicker = async () => {
-    Animated.timing(animWidth, {
+    const animVert = Animated.timing(animWidth, {
       toValue: 220,
       duration: 200,
       useNativeDriver: false,
-    }).start(() =>
-      Animated.timing(animHeight, {
-        toValue: 400,
-        duration: 200,
-        useNativeDriver: false,
-      }).start()
-    );
-  };
-
-  const closePicker = async () => {
-    Animated.timing(animHeight, {
-      toValue: 30,
+    });
+    const animHoriz = Animated.timing(animHeight, {
+      toValue: 400,
       duration: 200,
       useNativeDriver: false,
-    }).start(() =>
-      Animated.timing(animWidth, {
-        toValue: 30,
-        duration: 200,
-        useNativeDriver: false,
-      }).start(() => {
-        setOpen(false);
-      })
-    );
+    });
+
+    animVert.start(() => animHoriz.start());
   };
 
-  const chooseEmoji = useCallback( (icon: string) => {
+  const closePicker = () => {
+    setOpen(false);
+  };
+
+  const chooseEmoji = useCallback(async (icon: string) => {
     props.setIcon(icon);
     closePicker();
-  }, [props.setIcon]);
+  }, []);
 
   useEffect(() => {
-    if (props.open) setOpen(true);
+    if (props.open) {
+      Keyboard.dismiss();
+      setOpen(true);
+    }
     if (open) openPicker();
   }, [open, props.open]);
 
-  const foodEmojis: String[] = [
-    '🍏',
-    '🍎',
-    '🍐',
-    '🍊',
-    '🍋',
-    '🍌',
-    '🍉',
-    '🍇',
-    '🍓',
-    '🍈',
-    '🍒',
-    '🍑',
-    '🥭',
-    '🍍',
-    '🥥',
-    '🥝',
-    '🍅',
-    '🍆',
-    '🥑',
-    '🥦',
-    '🥬',
-    '🥒',
-    '🌶',
-    '🌽',
-    '🥕',
-    '🧄',
-    '🧅',
-    '🥔',
-    '🍠',
-    '🥐',
-    '🥯',
-    '🍞',
-    '🥖',
-    '🥨',
-    '🧀',
-    '🥚',
-    '🍳',
-    '🧈',
-    '🥞',
-    '🧇',
-    '🥓',
-    '🥩',
-    '🍗',
-    '🍖',
-    '🦴',
-    '🌭',
-    '🍔',
-    '🍟',
-    '🍕',
-    '🥪',
-    '🥙',
-    '🧆',
-    '🌮',
-    '🌯',
-    '🥗',
-    '🥘',
-    '🥫',
-    '🍝',
-    '🍜',
-    '🍲',
-    '🍛',
-    '🍣',
-    '🍱',
-    '🥟',
-    '🦪',
-    '🍤',
-    '🍙',
-    '🍚',
-    '🍘',
-    '🍥',
-    '🥠',
-    '🥮',
-    '🍢',
-    '🍡',
-    '🍧',
-    '🍨',
-    '🍦',
-    '🥧',
-    '🧁',
-    '🍰',
-    '🎂',
-    '🍮',
-    '🍭',
-    '🍬',
-    '🍫',
-    '🍿',
-    '🍩',
-    '🍪',
-    '🌰',
-    '🥜',
-    '🍯',
-    '🥛',
-    '🍼',
-    '🫖',
-    '☕️',
-    '🍵',
-    '🧃',
-    '🥤',
-    '🍶',
-    '🍺',
-    '🍻',
-    '🥂',
-    '🍷',
-    '🥃',
-    '🍸',
-    '🍹',
-    '🧉',
-    '🍾',
-    '🧊',
-    '🥄',
-    '🍴',
-    '🍽',
-    '🥣',
-    '🥡',
-    '🥢',
-    '🧂',
-  ];
-
   const PickerContent = () => {
+    const foodEmojis: String[] = [
+      '🍏',
+      '🍎',
+      '🍐',
+      '🍊',
+      '🍋',
+      '🍌',
+      '🍉',
+      '🍇',
+      '🍓',
+      '🍈',
+      '🍒',
+      '🍑',
+      '🥭',
+      '🍍',
+      '🥥',
+      '🥝',
+      '🍅',
+      '🍆',
+      '🥑',
+      '🥦',
+      '🥬',
+      '🥒',
+      '🌶',
+      '🌽',
+      '🥕',
+      '🧄',
+      '🧅',
+      '🥔',
+      '🍠',
+      '🥐',
+      '🥯',
+      '🍞',
+      '🥖',
+      '🥨',
+      '🧀',
+      '🥚',
+      '🍳',
+      '🧈',
+      '🥞',
+      '🧇',
+      '🥓',
+      '🥩',
+      '🍗',
+      '🍖',
+      '🦴',
+      '🌭',
+      '🍔',
+      '🍟',
+      '🍕',
+      '🥪',
+      '🥙',
+      '🧆',
+      '🌮',
+      '🌯',
+      '🥗',
+      '🥘',
+      '🥫',
+      '🍝',
+      '🍜',
+      '🍲',
+      '🍛',
+      '🍣',
+      '🍱',
+      '🥟',
+      '🦪',
+      '🍤',
+      '🍙',
+      '🍚',
+      '🍘',
+      '🍥',
+      '🥠',
+      '🥮',
+      '🍢',
+      '🍡',
+      '🍧',
+      '🍨',
+      '🍦',
+      '🥧',
+      '🧁',
+      '🍰',
+      '🎂',
+      '🍮',
+      '🍭',
+      '🍬',
+      '🍫',
+      '🍿',
+      '🍩',
+      '🍪',
+      '🌰',
+      '🥜',
+      '🍯',
+      '🥛',
+      '🍼',
+      '🫖',
+      '☕️',
+      '🍵',
+      '🧃',
+      '🥤',
+      '🍶',
+      '🍺',
+      '🍻',
+      '🥂',
+      '🍷',
+      '🥃',
+      '🍸',
+      '🍹',
+      '🧉',
+      '🍾',
+      '🧊',
+      '🥄',
+      '🍴',
+      '🍽',
+      '🥣',
+      '🥡',
+      '🥢',
+      '🧂',
+    ];
+
     const emojiGrid: String[][] = [];
 
     while (foodEmojis.length) {
@@ -191,49 +191,55 @@ const EmojiPicker = (props: EmojiProps) => {
       emojiGrid.push(foodEmojis.splice(0, 5));
     }
 
-    const emojiButtons = emojiGrid.map((e) => {
-      const row = e.map((e) => (
-        <Pressable
-          key={e.toString()}
-          style={{ width: 40, height: 40, elevation: 5 }}
-          onPress={() => chooseEmoji(e.toString())}
-        >
-          <Text style={{ textAlign: 'center', fontSize: 20 }}>{e}</Text>
-        </Pressable>
-      ));
+    const renderRow = ({ item }: { item: String[] }) => {
+      const buttons = item.map((e) => {
+        return (
+          <Pressable
+            key={e.toString()}
+            style={{ width: 40, height: 40, elevation: 5 }}
+            onPress={() => chooseEmoji(e.toString())}
+          >
+            <Text style={{ textAlign: 'center', fontSize: 20 }}>{e}</Text>
+          </Pressable>
+        );
+      });
 
       return (
         <View
-          key={e.toString()}
+          key={item.toString()}
           style={{ justifyContent: 'flex-start', flexDirection: 'row' }}
         >
-          {row}
+          {buttons}
         </View>
       );
-    });
+    };
 
-    return <View>{emojiButtons}</View>;
+    return (
+      <FlatList
+        data={emojiGrid}
+        renderItem={renderRow}
+        keyExtractor={(item) => item.toString()}
+      />
+    );
   };
 
   if (open) {
-  return (
-    <>
-      <Pressable style={styles.container} onPress={() => setOpen(!open)}/>
-      <Animated.View
-        style={[
-          styles.picker,
-          {
-            width: animWidth,
-            height: animHeight,
-          },
-        ]}
-      >
-        <ScrollView>
-          <PickerContent />
-        </ScrollView>
-      </Animated.View>
-    </>
-  );
+    return (
+      <>
+        <Pressable style={styles.container} onPress={() => closePicker()} />
+        <Animated.View
+          style={[
+            styles.picker,
+            {
+              width: animWidth,
+              height: animHeight,
+            },
+          ]}
+        >
+          <View>{open && <PickerContent />}</View>
+        </Animated.View>
+      </>
+    );
   } else {
     return null;
   }
