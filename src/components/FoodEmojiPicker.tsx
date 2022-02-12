@@ -248,8 +248,10 @@ const EmojiPicker = (props: EmojiProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '105%',
-    height: '102%',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     position: 'absolute',
     backgroundColor: 'rgb(0,0,0)',
     opacity: 0.5,
@@ -257,7 +259,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     top: 10,
-    alignSelf: 'center',
+    right: '15%',
     position: 'absolute',
     backgroundColor: '#fff',
     borderRadius: 10,

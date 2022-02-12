@@ -75,25 +75,32 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
           placeholder='New Recipe Name'
           keyboardAppearance='dark'
         />
-        <Pressable
-          onPressOut={() => setEmojiPickerOpen(!emojiPickerOpen)}
-        >
-          <Text
+        <View>
+          <Pressable
+            onPressOut={() => setEmojiPickerOpen(!emojiPickerOpen)}
+            android_ripple={{ color: '#ccc', borderless: true, radius: 19, }}
             style={{
-              paddingRight: 1,
-              paddingBottom: 1,
-              textAlign: 'center',
-              textAlignVertical: 'center',
               borderWidth: 1,
               height: 40,
               width: 40,
               marginLeft: 5,
               borderRadius: 100,
+              //backgroundColor: 'rgba(0,0,0,0.2)',
+              justifyContent: 'center'
             }}
           >
-            {icon}
-          </Text>
-        </Pressable>
+            <Text
+              style={{
+                paddingRight: 1,
+                paddingBottom: 5,
+                textAlign: 'center',
+                textAlignVertical: 'center',
+              }}
+            >
+              {icon}
+            </Text>
+          </Pressable>
+        </View>
       </View>
       <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Description</Text>
       <Divider />
