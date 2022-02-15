@@ -7,6 +7,7 @@ import {
   Pressable,
   TextInput,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import Divider from '../components/Divider';
 import EmojiPicker from '../components/FoodEmojiPicker';
@@ -19,39 +20,39 @@ type CreateRecipeProps = NativeStackScreenProps<
   'CreateRecipe'
 >;
 
-const EXAMPLE: Recipe = {
-  id: 1,
-  title: 'Example',
-  icon: '🌯',
-  description: 'blabla',
-  tags: [
-    {
-      id: 1,
-      name: 'chickn',
-    },
-    {
-      id: 2,
-      name: 'other',
-    },
-  ],
-};
+const EXAMPLE_TAGS = [
+  {
+    id: 1,
+    name: 'chickn',
+  },
+  {
+    id: 2,
+    name: 'other',
+  },
+];
 
 const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
   const database = databaseHandler.connection;
 
-  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [icon, setIcon] = useState('🍆')
+  const [icon, setIcon] = useState('🍆');
 
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
 
-  const maxDescriptionLen = 100;
+  const maxDescriptionLen = 90;
   const [descriptionLen, setDescriptionLen] = useState(0);
 
   const saveRecipe = () => {
     navigation.navigate({
       name: 'RecipeOverview',
-      params: { newRecipe: EXAMPLE },
+      params: { newRecipe: {
+        id: 1,
+        icon: icon,
+        title: title,
+        description: description,
+        tags: EXAMPLE_TAGS
+      } },
       merge: true,
     });
   };
@@ -61,72 +62,79 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
   }, [description]);
 
   useEffect(() => {
-    if (emojiPickerOpen)
-    setEmojiPickerOpen(false);
-  }, [emojiPickerOpen])
+    if (emojiPickerOpen) setEmojiPickerOpen(false);
+  }, [emojiPickerOpen]);
 
   return (
     <SafeAreaView style={styles.form}>
-      <View style={{ flexDirection: 'row' }}>
+      <ScrollView>
+        {/* recipe title and icon */}
+        <View style={{ flexDirection: 'row' }}>
+          <TextInput
+            style={[styles.inputField, { flex: 1 }]}
+            onChangeText={setTitle}
+            value={title}
+            placeholder='New Recipe Name'
+            keyboardAppearance='dark'
+          />
+          <View>
+            <Pressable
+              onPressOut={() => setEmojiPickerOpen(!emojiPickerOpen)}
+              android_ripple={{ color: '#fff', borderless: true, radius: 19 }}
+              style={styles.emojiPickerButton}
+            >
+              <Text style={styles.emojiPickerIcon}>{icon}</Text>
+            </Pressable>
+          </View>
+        </View>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Description</Text>
+        <Divider />
+
+        {/* description */}
         <TextInput
-          style={[styles.inputField, { flex: 1 }]}
-          onChangeText={setName}
-          value={name}
-          placeholder='New Recipe Name'
+          style={[styles.inputField, styles.multiline]}
+          multiline
+          numberOfLines={5}
+          onChangeText={setDescription}
+          value={description}
+          maxLength={maxDescriptionLen}
+          placeholder='Description'
           keyboardAppearance='dark'
         />
+        <Text style={styles.multilineInputText}>
+          {descriptionLen}/{maxDescriptionLen}
+        </Text>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Ingredients</Text>
+        <Divider />
+
+        {/* description */}
         <View>
-          <Pressable
-            onPressOut={() => setEmojiPickerOpen(!emojiPickerOpen)}
-            android_ripple={{ color: '#ccc', borderless: true, radius: 19, }}
-            style={{
-              borderWidth: 1,
-              height: 40,
-              width: 40,
-              marginLeft: 5,
-              borderRadius: 100,
-              //backgroundColor: 'rgba(0,0,0,0.2)',
-              justifyContent: 'center'
-            }}
-          >
-            <Text
+          <View style={{ flexDirection: 'row', elevation: 1, }}>
+            <TextInput
               style={{
-                paddingRight: 1,
-                paddingBottom: 5,
-                textAlign: 'center',
-                textAlignVertical: 'center',
+                backgroundColor: 'rgba(240,240,240,0.9)',
+                borderRadius: 10,
+                width: '89%',
+                marginRight: 2,
+                paddingHorizontal: 10,
               }}
+              placeholder='Ingredient'
+            />
+            <Pressable
+              style={{
+                backgroundColor: 'rgba(240,240,240,0.9)',
+                borderRadius: 100,
+                width: '10%',
+              }}
+              android_ripple={{ color: '#fff', borderless: true, radius: 15, }}
             >
-              {icon}
-            </Text>
-          </Pressable>
+              <Text style={{textAlign: 'center', textAlignVertical: 'center', paddingTop: 4, paddingLeft: 1,}}>+</Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
-      <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Description</Text>
-      <Divider />
-      <TextInput
-        style={[styles.inputField, styles.multiline]}
-        multiline
-        numberOfLines={2}
-        onChangeText={setDescription}
-        value={description}
-        maxLength={maxDescriptionLen}
-        spellCheck={false}
-        placeholder='Description'
-        keyboardAppearance='dark'
-      />
-      <Text
-        style={{
-          textAlign: 'right',
-          marginRight: 3,
-          marginTop: -10,
-          fontSize: 12,
-        }}
-      >
-        {descriptionLen}/{maxDescriptionLen}
-      </Text>
-      <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Ingredients</Text>
-      <Divider />
+      </ScrollView>
+
+      {/* create recipe button */}
       <Pressable
         style={styles.createButton}
         android_ripple={{ color: '#fff' }}
@@ -134,7 +142,7 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
       >
         <Text style={styles.buttonText}>Create Recipe</Text>
       </Pressable>
-      <EmojiPicker open={emojiPickerOpen} setIcon={setIcon}/>
+      <EmojiPicker open={emojiPickerOpen} setIcon={setIcon} />
     </SafeAreaView>
   );
 };
@@ -174,6 +182,26 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     textAlignVertical: 'top',
     height: 80,
+  },
+  multilineInputText: {
+    textAlign: 'right',
+    marginRight: 3,
+    marginTop: -10,
+    fontSize: 12,
+  },
+  emojiPickerButton: {
+    borderWidth: 1,
+    height: 40,
+    width: 40,
+    marginLeft: 5,
+    borderRadius: 100,
+    justifyContent: 'center',
+  },
+  emojiPickerIcon: {
+    paddingRight: 1,
+    paddingBottom: 4,
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });
 

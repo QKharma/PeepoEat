@@ -31,7 +31,7 @@ const EmojiPicker = (props: EmojiProps) => {
 
   const openPicker = async () => {
     const animVert = Animated.timing(animWidth, {
-      toValue: 220,
+      toValue: 260,
       duration: 200,
       useNativeDriver: false,
     });
@@ -184,11 +184,11 @@ const EmojiPicker = (props: EmojiProps) => {
     const emojiGrid: String[][] = [];
 
     while (foodEmojis.length) {
-      if (foodEmojis.length < 5) {
+      if (foodEmojis.length < 6) {
         emojiGrid.push(foodEmojis.splice(0, foodEmojis.length));
         continue;
       }
-      emojiGrid.push(foodEmojis.splice(0, 5));
+      emojiGrid.push(foodEmojis.splice(0, 6));
     }
 
     const renderRow = ({ item }: { item: String[] }) => {
@@ -196,10 +196,11 @@ const EmojiPicker = (props: EmojiProps) => {
         return (
           <Pressable
             key={e.toString()}
-            style={{ width: 40, height: 40, elevation: 5 }}
+            style={{ width: 40, height: 40, elevation: 5, paddingTop: 4,}}
             onPress={() => chooseEmoji(e.toString())}
+            android_ripple={{ color: '#aaa', borderless: true, radius: 20, }}
           >
-            <Text style={{ textAlign: 'center', fontSize: 20 }}>{e}</Text>
+            <Text style={{ textAlign: 'center', fontSize: 20, textAlignVertical: 'center' }}>{e}</Text>
           </Pressable>
         );
       });
