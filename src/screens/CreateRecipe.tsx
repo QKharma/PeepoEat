@@ -8,12 +8,16 @@ import {
   TextInput,
   SafeAreaView,
   ScrollView,
+  FlatList,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Divider from '../components/Divider';
 import EmojiPicker from '../components/FoodEmojiPicker';
+import IngredientList from '../components/IngredientList';
 import { databaseHandler } from '../database/databaseHandler';
 import { Recipe } from '../database/entities/Recipe';
 import { RootStackParamList } from '../navigation/PeepoNavigation';
+import { styles } from '../styles/CreateRecipeStyles';
 
 type CreateRecipeProps = NativeStackScreenProps<
   RootStackParamList,
@@ -46,13 +50,15 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
   const saveRecipe = () => {
     navigation.navigate({
       name: 'RecipeOverview',
-      params: { newRecipe: {
-        id: 1,
-        icon: icon,
-        title: title,
-        description: description,
-        tags: EXAMPLE_TAGS
-      } },
+      params: {
+        newRecipe: {
+          id: 1,
+          icon: icon,
+          title: title,
+          description: description,
+          tags: EXAMPLE_TAGS,
+        },
+      },
       merge: true,
     });
   };
@@ -107,33 +113,11 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
         <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Ingredients</Text>
         <Divider />
 
-        {/* description */}
-        <View>
-          <View style={{ flexDirection: 'row', elevation: 1, }}>
-            <TextInput
-              style={{
-                backgroundColor: 'rgba(240,240,240,0.9)',
-                borderRadius: 10,
-                width: '89%',
-                marginRight: 2,
-                paddingHorizontal: 10,
-              }}
-              placeholder='Ingredient'
-            />
-            <Pressable
-              style={{
-                backgroundColor: 'rgba(240,240,240,0.9)',
-                borderRadius: 100,
-                width: '10%',
-              }}
-              android_ripple={{ color: '#fff', borderless: true, radius: 15, }}
-            >
-              <Text style={{textAlign: 'center', textAlignVertical: 'center', paddingTop: 4, paddingLeft: 1,}}>+</Text>
-            </Pressable>
-          </View>
-        </View>
+        {/* ingredients */}
       </ScrollView>
-
+      <View style={{flexGrow: 100}}>
+        <IngredientList/>
+      </View>
       {/* create recipe button */}
       <Pressable
         style={styles.createButton}
@@ -146,63 +130,5 @@ const CreateRecipe = ({ route, navigation }: CreateRecipeProps) => {
     </SafeAreaView>
   );
 };
-
-const screenPadding = 5;
-
-const styles = StyleSheet.create({
-  form: {
-    flex: 1,
-    flexDirection: 'column',
-    padding: screenPadding,
-    backgroundColor: '#ccf',
-  },
-  createButton: {
-    marginVertical: 1,
-    position: 'absolute',
-    marginLeft: screenPadding,
-    marginBottom: screenPadding + 10,
-    width: '100%',
-    bottom: 0,
-    backgroundColor: '#eee',
-    elevation: 10,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    textAlign: 'center',
-  },
-  inputField: {
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 2,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
-  multiline: {
-    paddingTop: 10,
-    textAlignVertical: 'top',
-    height: 80,
-  },
-  multilineInputText: {
-    textAlign: 'right',
-    marginRight: 3,
-    marginTop: -10,
-    fontSize: 12,
-  },
-  emojiPickerButton: {
-    borderWidth: 1,
-    height: 40,
-    width: 40,
-    marginLeft: 5,
-    borderRadius: 100,
-    justifyContent: 'center',
-  },
-  emojiPickerIcon: {
-    paddingRight: 1,
-    paddingBottom: 4,
-    textAlign: 'center',
-    textAlignVertical: 'center',
-  },
-});
 
 export default CreateRecipe;
